@@ -1,0 +1,55 @@
+name: Atualizar TV Dreamis
+
+on:
+  schedule:
+    - cron: "30 11,14,17,20 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      exemplo:
+        description: "Publicar com dados de EXEMPLO (sem ler o Pipefy)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install cryptography
+      - name: Gerar dados da TV
+        env:
+          PIPEFY_TOKEN: ${{ secrets.PIPEFY_TOKEN_GAMEFICACAO }}
+          TV_PASSWORD: ${{ secrets.TV_PASSWORD }}
+          TV_METAS_JSON: ${{ secrets.TV_METAS_JSON }}
+        run: |
+          if [ "${{ inputs.exemplo }}" = "true" ]; then
+            python3 sync/run.py --sample
+          else
+            python3 sync/run.py
+          fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
