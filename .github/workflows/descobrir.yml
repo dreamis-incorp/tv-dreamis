@@ -1,0 +1,20 @@
+name: Descobrir estrutura do Pipefy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  descobrir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Listar pipes, fases e campos (sem ler cards)
+        env:
+          PIPEFY_TOKEN: ${{ secrets.PIPEFY_TOKEN_GAMEFICACAO }}
+        run: python3 sync/descobrir.py
