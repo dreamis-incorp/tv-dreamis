@@ -28,3 +28,31 @@ assert p['semana']['ativa'] is False and p['semana']['comeca_em'] == '2026-10-22
 p = nn.placar(pq(['2026-10-01'], '2026-11-10'), [], cfg, '2026-11-10')
 assert [m for m in p['marcos'] if m['k'] == 'ab'][0]['feito'] == 0
 print('ok: todos os testes passaram')
+
+# ---- Comercial / Incorporacao / Marketing (cards ficticios com a mesma forma do Pipefy) ----
+import json
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from tools.sample_pipes import make, card
+from datetime import date, timedelta
+import comercial, incorporacao, marketing
+PC = json.load(open(os.path.join(os.path.dirname(__file__), '..', 'config', 'pipes.json'), encoding='utf-8'))
+H = '2026-11-10'
+d = date(2026, 11, 10)
+mk = lambda **k: card(d - timedelta(days=k.pop('ago', 1)), k.pop('fase', 'Cadastro'), k.pop('path', [('Cadastro', d)]), k.pop('fields', {}), k.pop('labels', ()))
+cards = [
+    mk(labels=['Alessandro'], fields={'Produto Dreamis de interesse': 'Tauá', 'Por onde veio o cliente': 'Meta'}),
+    mk(labels=['Arthur'], fields={'Por onde veio o cliente': 'Meta', 'Data e hora do atendimento agendado': '12/11/2026 10:00'}),
+    mk(labels=['Kharina'], fields={'Data e hora do atendimento agendado': '05/11/2026 10:00', 'Data e hora do atendimendo realizado': '05/11/2026 10:30'}),
+    mk(ago=40, labels=['Raquel']),   # cadastrado no mes anterior
+]
+r = comercial.build(cards, PC, H)
+assert r['kpis']['cadastros']['v'] == 3 and r['kpis']['cadastros']['ant'] == 1, r['kpis']
+assert r['kpis']['agendados']['v'] == 1 and r['kpis']['visitas']['v'] == 1, r['kpis']
+assert r['frentes']['house']['cadastros'] == 2 and r['frentes']['plataforma']['cadastros'] == 1, r['frentes']
+assert r['origem'][0]['origem'] == 'Meta' and r['origem'][0]['cadastros'] == 2
+assert round(r['qualificacao']) == 33
+X = make(H)
+inc = incorporacao.build(X['tau'], X['hom'], PC, H); mkt = marketing.build(X['redes'], X['ges'], X['off'], r, PC, H)
+assert inc['tau']['ativos'] + inc['tau']['contratos'] + inc['tau']['travados'] == 15
+assert len(mkt['redes']['funil']) == 6 and mkt['offline'][3]['n'] == 10
+print('ok: Comercial, Incorporacao e Marketing')

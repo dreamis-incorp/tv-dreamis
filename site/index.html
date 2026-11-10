@@ -162,6 +162,34 @@ footer .tag{font-size:15px;color:var(--mute)}
 .g2f .fun{grid-template-columns:190px 1fr 40px;margin:5px 0;font-size:17px}.g2f .fun .bar{height:20px}
 .col-v:not(.com) .g2f .card{padding:18px 24px}.col-v:not(.com) .g2f .card h2{font-size:22px;margin-bottom:6px}
 .sechead{font-size:23px;margin-top:2px}
+
+.tls{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px}
+.tl{text-align:center}.tl b{display:block;font-size:50px;font-weight:900;line-height:1}.tl span{font-size:16px;color:var(--mute)}
+.fun.og{grid-template-columns:230px 1fr 40px 90px}.fun.og em{font-style:normal;font-size:15px;color:var(--mute)}
+.fun.et{grid-template-columns:260px 1fr 40px}
+.col-v .fun{grid-template-columns:230px 1fr 44px;margin:6px 0;font-size:17px}.col-v .fun .bar{height:20px}.col-v .fun b{font-size:22px}
+.col-v .card h2{margin-bottom:8px}.col-v .card .sub{font-size:17px;margin-bottom:8px}
+.col-v.com{gap:14px}.col-v.com .card.kp{padding:18px 26px}.col-v.com .card.kp .v{font-size:84px}.col-v.com .g2k,.col-v.com .g2f{gap:14px}
+.col-v.com .stat.sm{padding:14px 20px}.col-v.com .stat.sm .v{font-size:56px}.col-v.com .stat.sm .l{font-size:16px}
+.col-v.com .g2f .card h2{font-size:24px}
+.stat.sm.alert .v{color:var(--orange)}
+.g2f .fun{grid-template-columns:150px 1fr 40px}
+.col-v .fun.og{grid-template-columns:230px 1fr 40px 80px}.col-v .fun.et{grid-template-columns:260px 1fr 44px}
+
+.stat.sm .delta{font-size:17px;margin-top:8px}
+.col-v.roomy{gap:26px}
+.col-v.roomy .sechead{font-size:30px}
+.col-v.roomy .card{padding:30px 34px}
+.col-v.roomy .card h2{font-size:32px;margin-bottom:12px}
+.col-v.roomy .card .sub{font-size:21px;margin-bottom:14px}
+.col-v.roomy .fun{margin:14px 0;font-size:22px}.col-v.roomy .fun .bar{height:30px}.col-v.roomy .fun b{font-size:28px}
+.col-v.roomy .fun.og em{font-size:18px}
+.col-v.roomy .stat.sm{padding:24px 24px}.col-v.roomy .stat.sm .v{font-size:84px}.col-v.roomy .stat.sm .l{font-size:20px}
+.col-v.roomy .stat.sm .delta{font-size:19px}
+.col-v.roomy .g2f .fun{grid-template-columns:190px 1fr 44px}
+.col-v.roomy .fun.et{grid-template-columns:330px 1fr 44px}
+.col-v.roomy .stat:not(.sm) .v{font-size:130px}.col-v.roomy .stat:not(.sm){justify-content:center}
+.col-v.roomy>section.card{flex:1;display:flex;flex-direction:column;justify-content:center}.col-v.roomy>.g2f{flex:1}.col-v.roomy>.g2f>.card{display:flex;flex-direction:column;justify-content:center}.col-v.roomy>.grid4{flex:none}
 </style>
 </head>
 <body>
@@ -245,22 +273,52 @@ const SLIDES = [
     const conq = `<div class="conq"><span>🏆 Recorde: <b class="num">${r.melhor_semana}</b> em uma semana</span><span>Semanas com meta batida: <b class="num">${r.semanas_batidas}</b></span><span>Sequência: <b class="num">${r.sequencia}</b></span></div>`;
     return `<div class="col-v">${week}${marcos}${pipe}${conq}</div>`;
   }},
- {id:'com', sector:'Comercial', title:'Resultado do mês', ex:d=>d.comercial&&d.comercial.exemplo, ok:d=>d.comercial,
+ {id:'com', sector:'Comercial', title:'Resultado do mês', ex:d=>d.exemplo, ok:d=>d.comercial,
   html(d){
-    const c=d.comercial, k=c.kpis, mc=c.meta_conjunta;
-    const card=(l,o)=>`<section class="card stat kp"><div class="l" style="margin:0 0 10px;font-size:28px;color:var(--soft);font-weight:700">${l}</div><div class="v num">${nf(o.v)}</div>${deltaHtml(o.v,o.ant)}</section>`;
-    const conj=(kk,l)=>{ const o=mc[kk]; const st=o.feito>=o.meta?'ok':'run'; return `<div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:28px;margin-bottom:12px"><span class="lab" style="margin:0">${l}</span><b class="num">${o.feito} de ${o.meta}</b></div>${track(o.feito,o.meta,st,null,null,true)}</div>`; };
-    const rows=(f)=>[['cadastros','Cadastros'],['agendados','Agendados'],['visitas','Visitas'],['vendas','Vendas']].map(([kk,l])=>{
-      const v=f[kk], m=f.meta[kk], st=v>=m?'ok':'run';
-      return `<div style="margin:12px 0"><div style="display:flex;justify-content:space-between;font-size:24px;margin-bottom:8px"><span>${l}</span><b class="num">${v} de ${m}</b></div>${track(v,m,st)}</div>`; }).join('');
+    const c=d.comercial, k=c.kpis;
+    const card=(l,o)=>`<section class="card stat kp"><div class="l" style="margin:0 0 6px;font-size:26px;color:var(--soft);font-weight:700">${l}</div><div class="v num">${nf(o.v)}</div>${deltaHtml(o.v,o.ant)}</section>`;
+    const pc = v => v==null ? '–' : String(v).replace('.',',')+'%';
+    const tiles=(f)=>[['cadastros','Cadastros'],['agendados','Agendados'],['visitas','Visitas'],['vendas','Vendas']].map(([kk,l])=>`<div class="tl"><b class="num">${f[kk]}</b><span>${l}</span></div>`).join('');
+    const bars=(arr,key)=>{ const mx=Math.max(1,...arr.map(x=>x.n??x.cadastros)); return arr.map(x=>`<div class="fun"><span>${esc(x.fase||x.origem)}</span><div class="bar"><i style="width:${pct((x.n??x.cadastros)/mx)}%"></i></div><b class="num">${x.n??x.cadastros}</b></div>`).join(''); };
+    const og=c.origem.map(x=>`<div class="fun og"><span>${esc(x.origem)}</span><div class="bar"><i style="width:${pct(x.cadastros/Math.max(1,...c.origem.map(y=>y.cadastros)))}%"></i></div><b class="num">${x.cadastros}</b><em>${x.visitas} visita${x.visitas===1?'':'s'}</em></div>`).join('');
     return `<div class="col-v com">
       <div class="sechead">${esc(c.mes)} · parcial até ${esc(c.parcial_ate)}</div>
-      <div class="g2k">${card('Cadastros',k.cadastros)}${card('Atendimentos agendados',k.agendados)}${card('Visitas',k.visitas)}${card('Vendas',k.vendas)}</div>
-      <div class="g2f"><section class="card stat sm"><div class="v num">${String(c.comparecimento).replace('.',',')}%</div><div class="l">dos atendimentos agendados foram realizados (90 dias)</div></section>
-        <section class="card stat sm"><div class="v num">${String(c.qualificacao).replace('.',',')}%</div><div class="l">dos cadastros do mês com tipologia preenchida</div></section></div>
-      <section class="card"><h2>Meta conjunta do mês</h2><div class="sub" style="margin-bottom:14px">House e Plataforma somando</div><div style="display:flex;gap:44px">${conj('visitas','Visitas')}${conj('vendas','Vendas')}</div></section>
-      <div class="g2f"><section class="card"><h2>House</h2>${rows(c.frentes.house)}</section><section class="card"><h2>Plataforma</h2>${rows(c.frentes.plataforma)}</section></div>
-      <div class="note" style="margin:0;font-size:20px">Comparação com o mês anterior no mesmo número de dias.</div></div>`;
+      <div class="g2k">${card('Cadastros',k.cadastros)}${card('Atendimentos agendados',k.agendados)}${card('Visitas realizadas',k.visitas)}${card('Vendas',k.vendas)}</div>
+      <div class="g2f"><section class="card stat sm"><div class="v num">${pc(c.comparecimento)}</div><div class="l">dos atendimentos agendados foram realizados (90 dias)</div></section>
+        <section class="card stat sm"><div class="v num">${pc(c.qualificacao)}</div><div class="l">dos cadastros do mês com produto de interesse preenchido</div></section></div>
+      <div class="g2f"><section class="card"><h2>House</h2><div class="tls">${tiles(c.frentes.house)}</div></section><section class="card"><h2>Plataforma</h2><div class="tls">${tiles(c.frentes.plataforma)}</div></section></div>
+      <section class="card"><h2>De onde vêm os cadastros do mês</h2>${og}</section>
+      <section class="card"><h2>Funil agora</h2>${bars(c.funil)}</section></div>`;
+  }},
+ {id:'inc', sector:'Incorporação', title:'Tauá e fornecedores', ex:d=>d.exemplo, ok:d=>d.incorporacao,
+  html(d){
+    const i=d.incorporacao, t=i.tau, h=i.homologacao;
+    const stat=(v,l,cls)=>`<section class="card stat sm ${cls||''}"><div class="v num">${v}</div><div class="l">${l}</div></section>`;
+    const et=t.etapas.slice(0,-1), mx=Math.max(1,...et.map(x=>x.n));
+    const fun=et.map(x=>`<div class="fun et"><span>${esc(x.etapa.replace(/^\d+\./,'').trim())}</span><div class="bar"><i style="width:${pct(x.n/mx)}%"></i></div><b class="num">${x.n}</b></div>`).join('');
+    const hm=Math.max(1,...h.funil.map(x=>x.n));
+    const hf=h.funil.map((x,k)=>`<div class="fun"><span>${esc(x.fase)}</span><div class="bar"><i class="${k===h.funil.length-1?'end':''}" style="width:${pct(x.n/hm)}%"></i></div><b class="num">${x.n}</b></div>`).join('');
+    return `<div class="col-v roomy">
+      <div class="sechead">Personalização do Tauá</div>
+      <div class="grid4 s4">${stat(t.ativos,'clientes em personalização')}${stat(t.atrasados,'com prazo vencido', t.atrasados? 'alert':'')}${stat(t.travados,'com dificuldade em avançar')}${stat(t.contratos,'contratos assinados')}</div>
+      <section class="card"><h2>Onde cada cliente está</h2><div class="sub">${t.ciclo_medio_dias!=null?`Ciclo médio até o contrato: ${t.ciclo_medio_dias} dias`:'Ciclo médio ainda sem dados'}</div>${fun}</section>
+      <div class="sechead">Homologação de fornecedores</div>
+      <div class="g2f"><section class="card"><h2>Funil</h2>${hf}</section>
+      <section class="card stat"><div class="v num">${h.homologados_mes}</div><div class="l">fornecedores homologados no mês</div><div class="delta eq" style="margin-top:12px">mês anterior: ${h.homologados_mes_ant}</div></section></div></div>`;
+  }},
+ {id:'mkt', sector:'Marketing', title:'Entregas e leads', ex:d=>d.exemplo, ok:d=>d.marketing,
+  html(d){
+    const m=d.marketing, r=m.redes, g=m.gestao;
+    const stat=(v,l,ant)=>`<section class="card stat sm"><div class="v num">${v}</div><div class="l">${l}</div>${ant!=null?deltaHtml(v,ant).replace('vs mês anterior','vs mês ant.'):''}</section>`;
+    const fun=(arr,skip)=>{ const a=skip?arr.slice(0,-1):arr; const mx=Math.max(1,...a.map(x=>x.n)); return a.map(x=>`<div class="fun"><span>${esc(x.fase)}</span><div class="bar"><i style="width:${pct(x.n/mx)}%"></i></div><b class="num">${x.n}</b></div>`).join(''); };
+    const mo=Math.max(1,...m.origem.map(y=>y.cadastros));
+    const og=m.origem.map(x=>`<div class="fun og"><span>${esc(x.origem)}</span><div class="bar"><i style="width:${pct(x.cadastros/mo)}%"></i></div><b class="num">${x.cadastros}</b><em>${x.visitas} visita${x.visitas===1?'':'s'}</em></div>`).join('');
+    return `<div class="col-v roomy">
+      <div class="sechead">${esc(m.mes)}</div>
+      <div class="grid4 s4">${stat(r.concluidos_mes,'conteúdos concluídos',r.concluidos_ant)}${stat(r.publicados_mes,'conteúdos publicados')}${stat(g.concluidas_mes,'demandas concluídas',g.concluidas_ant)}${stat(g.em_andamento,'demandas em andamento')}</div>
+      <div class="g2f"><section class="card"><h2>Redes sociais</h2><div class="sub">Pipeline de conteúdo</div>${fun(r.funil,true)}</section>
+      <section class="card"><h2>Mídia off-line</h2><div class="sub">Do radar ao contrato ativo</div>${fun(m.offline,false)}</section></div>
+      <section class="card"><h2>Leads por origem</h2><div class="sub">Cadastros do mês no Comercial e quantos já fizeram visita${m.cadastros_mes!=null?` · total ${m.cadastros_mes}`:''}</div>${og}</section></div>`;
   }},
 ];
 

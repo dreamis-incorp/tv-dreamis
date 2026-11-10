@@ -30,17 +30,24 @@ crm, pq = nn.read_crm(ccards, cph), nn.read_pq(pcards, pph)
 if not sample and (len(crm) < 5 or len(pq) < 20):
     sys.exit(f'ERRO: poucos cards lidos (crm {len(crm)}, pq {len(pq)}); nada foi publicado')
 
+import json as _j
+from leitura import ler
+PC = _j.load(open('config/pipes.json', encoding='utf-8'))
+if sample:
+    from tools.sample_pipes import make as _mk
+    X = _mk(hoje)
+else:
+    X = {'com': pipefy.cards_leves(PC['comercial']['pipe']), 'tau': pipefy.cards_leves(PC['incorporacao']['tau']['pipe']),
+         'hom': pipefy.cards_leves(PC['incorporacao']['homologacao']['pipe']), 'redes': pipefy.cards_leves(PC['marketing']['redes']['pipe']),
+         'ges': pipefy.cards_leves(PC['marketing']['gestao']['pipe']), 'off': pipefy.cards_leves(PC['marketing']['offline']['pipe'])}
+    if len(X['com']) < 100:
+        sys.exit(f"ERRO: poucos cards no Dreamis CRM ({len(X['com'])}); nada foi publicado")
+import comercial, incorporacao, marketing
+com = comercial.build(X['com'], PC, hoje)
 data = {'gerado_em': now.strftime('%Y-%m-%dT%H:%M'), 'hoje': hoje, 'exemplo': sample,
-        'novos_negocios': nn.build(pq, crm, cfg, hoje), 'comercial': None}
-
-# Comercial: entra quando o codigo de leitura do CRM comercial for integrado (ver docs).
-try:
-    import comercial
-    data['comercial'] = comercial.build(hoje, sample)
-except ImportError:
-    if sample:
-        from tools.sample_comercial import build as _b
-        data['comercial'] = _b(hoje)
+        'novos_negocios': nn.build(pq, crm, cfg, hoje), 'comercial': com,
+        'incorporacao': incorporacao.build(X['tau'], X['hom'], PC, hoje),
+        'marketing': marketing.build(X['redes'], X['ges'], X['off'], com, PC, hoje)}
 
 salt = open('config/salt.txt').read().strip()
 os.makedirs('site', exist_ok=True)

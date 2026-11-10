@@ -31,10 +31,16 @@ CARDS = '''query($p:ID!,$a:String){allCards(pipeId:$p,first:50,after:$a){pageInf
  phases_history{phase{id} firstTimeIn lastTimeOut}}}}}'''
 
 
-def cards(pipe):
+CARDS_L = '''query($p:ID!,$a:String){allCards(pipeId:$p,first:50,after:$a){pageInfo{hasNextPage endCursor}
+ edges{node{id createdAt due_date done current_phase{id name} labels{name}
+ fields{name value}
+ phases_history{phase{id name} firstTimeIn lastTimeOut}}}}}'''
+
+
+def cards(pipe, query=None):
     out, a = [], None
     while True:
-        d = q(CARDS, {'p': pipe, 'a': a})['allCards']
+        d = q(query or CARDS, {'p': pipe, 'a': a})['allCards']
         out += [e['node'] for e in d['edges']]
         if not d['pageInfo']['hasNextPage']:
             return out
@@ -43,3 +49,9 @@ def cards(pipe):
 
 def phases(pipe):
     return {x['id']: x['name'] for x in q('query($p:ID!){pipe(id:$p){phases{id name}}}', {'p': pipe})['pipe']['phases']}
+
+
+# Pipes dos outros setores (ver config/pipes.json)
+def cards_leves(pipe):
+    """Leitura para os slides de Comercial, Incorporacao e Marketing: sem titulo do card, so datas, fases, etiquetas e campos."""
+    return cards(pipe, CARDS_L)

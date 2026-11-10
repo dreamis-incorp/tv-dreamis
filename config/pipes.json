@@ -1,0 +1,98 @@
+{
+  "comercial": {
+    "pipe": "306830620",
+    "fases": {
+      "agendado": "Atendimento Agendado",
+      "visita": "Pós Atendimento",
+      "venda": "Concluído"
+    },
+    "campos": {
+      "agendado": "Data e hora do atendimento agendado",
+      "realizado": "Data e hora do atendimendo realizado",
+      "origem": "Por onde veio o cliente",
+      "produto": "Produto Dreamis de interesse",
+      "fechado": "Negócio fechado?"
+    },
+    "frentes": {
+      "house": [
+        "alessandro",
+        "kharina",
+        "karina"
+      ],
+      "plataforma": [
+        "arthur",
+        "raquel"
+      ]
+    },
+    "funil": [
+      "Cadastro",
+      "Lead Pré-Qualificado",
+      "Atendimento Agendado",
+      "Pós Atendimento",
+      "Negociação",
+      "Follow Up Qualificado",
+      "Plataforma"
+    ],
+    "origem_top": 5,
+    "metas": null
+  },
+  "incorporacao": {
+    "tau": {
+      "pipe": "307307072",
+      "final": "8.Sucesso ! Contrato assinado",
+      "travado": "Dificuldade em avançar no processo",
+      "etapas": [
+        "1.Jantar Briefing",
+        "2.Validação de layout TAKT",
+        "3.Layout apartamento",
+        "4.Validação de oramento preliminar TAKT",
+        "5.Orçamento Preliminar",
+        "6.Renders e Imagens",
+        "7.Projeto Executivo",
+        "8.Sucesso ! Contrato assinado"
+      ]
+    },
+    "homologacao": {
+      "pipe": "307294325",
+      "fases": [
+        "Caixa de entrada",
+        "Fazendo",
+        "Projeto Teste",
+        "Homologado"
+      ],
+      "final": "Homologado"
+    }
+  },
+  "marketing": {
+    "redes": {
+      "pipe": "305840587",
+      "fases": [
+        "Caixa de ideias",
+        "Planejamento",
+        "Produção",
+        "Publicação",
+        "Performance",
+        "Concluído"
+      ]
+    },
+    "gestao": {
+      "pipe": "306636435",
+      "andamento": [
+        "Pendente Atenção",
+        "Fazendo",
+        "Alinhamento Necerrário",
+        "Em Produção"
+      ],
+      "final": "Concluído"
+    },
+    "offline": {
+      "pipe": "307190959",
+      "fases": [
+        "RADAR",
+        "QUALIFICAÇÃO",
+        "CONTRATO",
+        "ATIVO"
+      ]
+    }
+  }
+}
