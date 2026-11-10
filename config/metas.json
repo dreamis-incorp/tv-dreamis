@@ -1,0 +1,24 @@
+{
+  "_fonte": "Plano do proximo terreno, aprovado com a diretoria em outubro de 2026. O Daniel define as metas oficiais da TV; ajustar aqui quando mudarem.",
+  "inicio": "2026-10-15",
+  "abordagem": ["2026-10-22", "2026-12-30"],
+  "meta_semana": 20,
+  "migracao": ["2026-08-18"],
+  "alerta_pq_dias": {"Caixa de entrada": 3, "Prospectando": 15, "Amadurecimento": 15},
+  "rotulos": {
+    "ab": "Proprietários abordados",
+    "int": "Interessados",
+    "reu": "Reuniões",
+    "prop": "Propostas formais",
+    "neg": "Negociações",
+    "fec": "Terreno fechado"
+  },
+  "marcos": [
+    ["2026-11-30", {"ab": 110, "int": 22, "reu": 15}],
+    ["2026-12-30", {"ab": 200, "int": 40, "reu": 30, "prop": 2}],
+    ["2027-01-31", {"reu": 40, "prop": 4, "neg": 1}],
+    ["2027-03-31", {"prop": 8, "neg": 2}],
+    ["2027-05-31", {"neg": 4}],
+    ["2027-06-30", {"fec": 1}]
+  ]
+}
